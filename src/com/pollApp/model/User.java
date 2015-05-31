@@ -44,26 +44,28 @@ public class User{
 	private String email;
 	@Column(name = "active")
 	private Boolean active;
-	@Column(name = "photo_small")
-	private String photo_small;
+	@Column(name = "photo")
+	private String photo;
 	@Column(name = "country")
 	private String country;
 	@Column(name = "province")
 	private String province;
 	@Column(name = "city")
 	private String city;
-	@Column(name = "date_created")
-	private long date_created;
-	@Column(name = "last_seen")
-	private long last_seen;
+	@Column(name = "creationDate")
+	private long creationDate;
+	@Column(name = "lastSeen")
+	private long lastSeen;
+	@Column(name = "language")
+	private String language;
+	@Column(name = "countryCode")
+	private int countryCode;
 	@OneToMany(mappedBy="admin")
 	private Set<Groups> groups;
 	@OneToMany(mappedBy="owner")
 	private Set<Poll> polls;
 	@OneToMany(mappedBy="user")
 	private Set<PollUser> pollUsers=new HashSet<PollUser>(0);
-	@OneToMany(mappedBy="user")
-	private Set<Comment> comments=new HashSet<Comment>(0);
 	@ManyToMany()
 	private Set<Groups> isInGroups = new HashSet <Groups>();  
 	public User(){}
@@ -148,14 +150,6 @@ public class User{
 		this.active = active;
 	}
 
-	public String getPhoto_small() {
-		return photo_small;
-	}
-
-	public void setPhoto_small(String photo_small) {
-		this.photo_small = photo_small;
-	}
-
 	public String getCountry() {
 		return country;
 	}
@@ -180,21 +174,7 @@ public class User{
 		this.city = city;
 	}
 
-	public long getDate_created() {
-		return date_created;
-	}
-
-	public void setDate_created(long date_created) {
-		this.date_created = date_created;
-	}
-
-	public long getLast_seen() {
-		return last_seen;
-	}
-
-	public void setLast_seen(long last_seen) {
-		this.last_seen = last_seen;
-	}
+	
 	public Set<Groups> getGroups() {
 		return groups;
 	}
@@ -227,12 +207,57 @@ public class User{
 		this.pollUsers = pollUsers;
 	}
 
-	public Set<Comment> getComments() {
-		return comments;
+	public Boolean getActive() {
+		return active;
 	}
 
-	public void setComments(Set<Comment> comments) {
-		this.comments = comments;
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public long getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(long creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public long getLastSeen() {
+		return lastSeen;
+	}
+
+	public void setLastSeen(long lastSeen) {
+		this.lastSeen = lastSeen;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public int getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(int countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
 	
 }

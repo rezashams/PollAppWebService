@@ -28,34 +28,35 @@ public class Poll {
 	@ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
-	@Column(name = "choices")
-	private String choice;
-	@Column(name = "statistic")
-	private String statistic;
-	@Column(name = "date_created")
-	private long date_created;
-	@Column(name = "last_activity_time")
-	private long last_activity_time;
-	@Column(name = "like_number")
-	private Integer like_number;
-	@Column(name = "dislike_number")
-	private Integer dislike_number;
-	@Column(name = "prize")
-	private Boolean prize;
+	@Column(name = "creationDate")
+	private long creationDate;
+	@Column(name = "lastActivityDate")
+	private long lastActivityDate;
 	@Column(name = "numOfVote")
 	private int numOfVote;
 	@ManyToOne
-    @JoinColumn(name="owner_id")
+    @JoinColumn(name="ownerId")
     private User owner;
 	@ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name="group_id")
+	@JoinColumn(name="groupId")
     private Groups group;
 	@Column(name = "type")
 	private String type;
+	@Column(name = "numOfQuestion")
+	private int numOfQuestion;
+	@Column(name = "ownerName")
+	private String ownerName;
+	@Column(name = "language")
+	private String language;
+	@Column(name = "country")
+	private String country;
+	
 	@OneToMany(mappedBy="poll",cascade = CascadeType.ALL)
 	private Set<PollUser> pollUsers=new HashSet<PollUser>(0);
+	
 	@OneToMany(mappedBy="poll",cascade = CascadeType.ALL)
-	private Set<Comment> comments=new HashSet<Comment>(0);
+	  private Set<Question> question=new HashSet<Question>(0);
+	
 	public Poll(){}
 	
 	public long getId() {
@@ -76,37 +77,10 @@ public class Poll {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	public String getChoice() {
-		return choice;
-	}
-	public void setChoice(String choice) {
-		this.choice = choice;
-	}
-	public String getStatistic() {
-		return statistic;
-	}
-	public void setStatistic(String statistic) {
-		this.statistic = statistic;
-	}
-	public long getDate_created() {
-		return date_created;
-	}
-	public void setDate_created(long date_created) {
-		this.date_created = date_created;
-	}
-	public long getLast_activity_time() {
-		return last_activity_time;
-	}
-	public void setLast_activity_time(long last_activity_time) {
-		this.last_activity_time = last_activity_time;
-	}
 	
-	public boolean isPrize() {
-		return prize;
-	}
-	public void setPrize(boolean prize) {
-		this.prize = prize;
-	}
+	
+	
+	
 	public Groups getGroup() {
 		return group;
 	}
@@ -134,44 +108,60 @@ public class Poll {
 		this.pollUsers = pollUsers;
 	}
 
-	public Set<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(Set<Comment> comments) {
-		this.comments = comments;
-	}
-
-	public Boolean getPrize() {
-		return prize;
-	}
-
-	public void setPrize(Boolean prize) {
-		this.prize = prize;
-	}
-
-	public void setLike_number(Integer like_number) {
-		this.like_number = like_number;
-	}
-
-	public void setDislike_number(Integer dislike_number) {
-		this.dislike_number = dislike_number;
-	}
-
-	public Integer getLike_number() {
-		return like_number;
-	}
-
-	public Integer getDislike_number() {
-		return dislike_number;
-	}
-
 	public int getNumOfVote() {
 		return numOfVote;
 	}
 
 	public void setNumOfVote(int numOfVote) {
 		this.numOfVote = numOfVote;
+	}
+
+	public long getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(long creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public long getLastActivityDate() {
+		return lastActivityDate;
+	}
+
+	public void setLastActivityDate(long lastActivityDate) {
+		this.lastActivityDate = lastActivityDate;
+	}
+
+	public int getNumOfQuestion() {
+		return numOfQuestion;
+	}
+
+	public void setNumOfQuestion(int numOfQuestion) {
+		this.numOfQuestion = numOfQuestion;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 }
