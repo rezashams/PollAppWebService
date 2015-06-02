@@ -18,34 +18,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.pollApp.entityGetJson.Poll_addPollJson;
+import com.pollApp.entityGetJson.poll.AddPollNonPrizeJson;
 import com.pollApp.errorLog.MessageLog;
+import com.pollApp.model.Choice;
 import com.pollApp.model.Poll;
+import com.pollApp.model.Question;
 import com.pollApp.service.PollService;
 import com.pollApp.service.UserService;
 
 @Path("poll") 
 public class PollWebService {
+	//localhost:9999/PollAppWebService/poll/addPollNonPrize
+	//{ "title":" is program work correctly?", "type":"public","ownerId":17  , "language": "persian", "country":"iran" , "options": [{"index":1 ,"title":"bale" } ,{"index":2 ,"title":"kheyr" } ]  }
 	@POST
-	@Path("addPoll")  
+	@Path("addPollNonPrize")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8") 
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addPoll(Poll_addPollJson json) {  //add default for prize
+	public Response addPollNonPrize(AddPollNonPrizeJson pollNonPrize) {  //add default for prize
 		Date date = new Date();
-		String title=json.getTitle();
-		String choices=json.getChoices();
-		String type=json.getType();
-		long owner_id=json.getOwnerId();
-		long group_id=json.getGroupId();
-		int prize=json.isPrize()?1:0;
-		long poll_id=PollService.addPoll(title, choices, date.getTime(), type, owner_id, prize, group_id);
+		long pollId=PollService.addPollNonPrize(pollNonPrize);
 		String status="success";
-		if(poll_id==0) {
+		if(pollId==-1) {
 			status="fail";
 		}
 		JSONObject jsonObject = new JSONObject();
 		try {
-			jsonObject.put("pollId", poll_id);
+			jsonObject.put("pollId", pollId);
 			jsonObject.put("status", status);
 			jsonObject.put("date", date.getTime());
 		} catch (JSONException e) {
@@ -65,7 +63,9 @@ public class PollWebService {
 			,@DefaultValue("public")@QueryParam("type") String type  ,@DefaultValue("false")@QueryParam("prize") boolean prize
              ,@DefaultValue("0")@QueryParam("lastUpdate") long last_update ,@DefaultValue("0")@QueryParam("groupId") long group_id) { 
 		List <Poll> pollList =new ArrayList <Poll> ();
-			pollList=PollService.getPolls(page, numOfEachPage,last_update,type,prize,group_id);
+		List <Question> questionList =new ArrayList <Question> ();
+		List <Choice> choiceList =new ArrayList <Choice> ();
+		pollList=PollService.getPolls(page, numOfEachPage,last_update,type,prize,group_id);
 		JSONArray pollArray= new JSONArray();     
 
 		try {
@@ -75,15 +75,10 @@ public class PollWebService {
 				jsonPoll.put("title", poll.getTitle());
 				jsonPoll.put("ownerName", poll.getOwner().getName());
 				
-				if(poll.getCategory()!=null) {
-					jsonPoll.put("categoryId", poll.getCategory().getId());
-				}
-				jsonPoll.put("choices", poll.getChoice());
-				jsonPoll.put("statistic", poll.getStatistic());
+				/*jsonPoll.put("choices", poll.getChoice());
 				jsonPoll.put("dateCreated", poll.getDate_created());
 				jsonPoll.put("lastActivityTime ", poll.getLast_activity_time());
-				jsonPoll.put("likeNumber", poll.getLike_number());
-				jsonPoll.put("dislikeNumber", poll.getDislike_number());
+				*/
 				jsonPoll.put("type", poll.getType());
 				jsonPoll.put("prize", poll.getPrize());
 				jsonPoll.put("numOfVote", poll.getNumOfVote());
@@ -118,12 +113,12 @@ public class PollWebService {
 					jsonPoll.put("categoryId", poll.getCategory().getId());
 				}
 				jsonPoll.put("ownerName", poll.getOwner().getName());
-				jsonPoll.put("choices", poll.getChoice());
+				/*jsonPoll.put("choices", poll.getChoice());
 				jsonPoll.put("statistic", poll.getStatistic());
 				jsonPoll.put("dateCreated", poll.getDate_created());
 				jsonPoll.put("lastActivityTime ", poll.getLast_activity_time());
 				jsonPoll.put("likeNumber", poll.getLike_number());
-				jsonPoll.put("dislikeNumber", poll.getDislike_number());
+				jsonPoll.put("dislikeNumber", poll.getDislike_number());*/
 				jsonPoll.put("type", poll.getType());
 				jsonPoll.put("prize", poll.getPrize());
 				jsonPoll.put("numOfVote", poll.getNumOfVote());
@@ -164,12 +159,12 @@ public class PollWebService {
 				if(poll.getCategory()!=null) {
 					jsonPoll.put("categoryId", poll.getCategory().getId());
 				}
-				jsonPoll.put("choices", poll.getChoice());
+			/*	jsonPoll.put("choices", poll.getChoice());
 				jsonPoll.put("statistic", poll.getStatistic());
 				jsonPoll.put("dateCreated", poll.getDate_created());
 				jsonPoll.put("lastActivityTime ", poll.getLast_activity_time());
 				jsonPoll.put("likeNumber", poll.getLike_number());
-				jsonPoll.put("dislikeNumber", poll.getDislike_number());
+				jsonPoll.put("dislikeNumber", poll.getDislike_number());*/
 				jsonPoll.put("type", poll.getType());
 				jsonPoll.put("prize", poll.getPrize());
 				jsonPoll.put("numOfVote", poll.getNumOfVote());

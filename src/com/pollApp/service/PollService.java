@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.pollApp.entityGetJson.poll.AddPollNonPrizeJson;
 import com.pollApp.finder.PollFinder;
 import com.pollApp.model.Poll;
 
@@ -16,20 +17,18 @@ public class PollService {
 		}
 	}
 
-	public static long addPoll (String title, String choices, long date_created,
-			String type, long owner_id, int prize,long group_id ) {
-		String statistic= initialStatistic(choices);
-		if (type.equals("public")) {
-			group_id=0;
+	public static long addPollNonPrize (AddPollNonPrizeJson pollNonPrize ) {
+		if (pollNonPrize.getType().equals("public")) {
+			pollNonPrize.setGroupId(-1);
 		}
 
-		return PollFinder.addPoll(title, choices,statistic, date_created, type, owner_id, prize, group_id);
+		return PollFinder.addPollNonPrize(pollNonPrize );
 	}
 
 
 	public static List<Poll> getPolls (int page, int numOfEachPage,long last_update,String type,boolean prize,long group_id ) {
 
-		return PollFinder.getPolls(page, numOfEachPage,last_update,type,prize,group_id);
+		return PollFinder.getPolls(page, numOfEachPage,last_update,type,group_id);
 	}
 
 	public static Poll getPoll (long poll_id ) {

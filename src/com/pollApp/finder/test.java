@@ -42,7 +42,7 @@ public static void testgetPolls() {
 	List <Poll> pollList=PollService.getPolls(page, numOfEachPage,last_update,type,prize,group_id);
 	for (Poll poll:pollList) {
 		System.out.println(poll.getId());
-		System.out.println(poll.getDate_created());
+		System.out.println(poll.getCreationDate());
 	}
 }
 
@@ -67,7 +67,7 @@ public static void testAddPoll() {
 	long owner_id=1;
 	int prize=1;
 	long group_id=0;
-	PollService.addPoll(title, choices, date_created, type, owner_id, prize, group_id);
+	//PollService.addPoll(title, choices, date_created, type, owner_id, prize, group_id);
 }
 
 public static void delete() {

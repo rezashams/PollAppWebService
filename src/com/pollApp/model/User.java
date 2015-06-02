@@ -65,9 +65,12 @@ public class User{
 	@OneToMany(mappedBy="owner")
 	private Set<Poll> polls;
 	@OneToMany(mappedBy="user")
-	private Set<PollUser> pollUsers=new HashSet<PollUser>(0);
+	private Set<Vote> votes=new HashSet<Vote>(0);
 	@ManyToMany()
-	private Set<Groups> isInGroups = new HashSet <Groups>();  
+	private Set<Groups> isInGroups = new HashSet <Groups>(0); 
+	@ManyToMany()
+	private Set<Prize> prizes = new HashSet <Prize>(0); 
+	
 	public User(){}
 
 	public long getId() {
@@ -199,13 +202,6 @@ public class User{
 		this.polls = polls;
 	}
 
-	public Set<PollUser> getPollUsers() {
-		return pollUsers;
-	}
-
-	public void setPollUsers(Set<PollUser> pollUsers) {
-		this.pollUsers = pollUsers;
-	}
 
 	public Boolean getActive() {
 		return active;
@@ -257,6 +253,22 @@ public class User{
 
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+
+	public Set<Vote> getVotes() {
+		return votes;
+	}
+
+	public void setVotes(Set<Vote> votes) {
+		this.votes = votes;
+	}
+
+	public Set<Prize> getPrizes() {
+		return prizes;
+	}
+
+	public void setPrizes(Set<Prize> prizes) {
+		this.prizes = prizes;
 	}
 
 	

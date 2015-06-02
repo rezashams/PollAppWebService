@@ -11,11 +11,15 @@ import org.hibernate.criterion.Restrictions;
 import com.pollApp.errorLog.*;
 import com.pollApp.model.*;
 public class UserFinder {
-
+    public static void main(String[] args) {
+    	//addUser("123132", 2222L,"reza");
+    	System.out.println(getUser("123132"));
+    	updateActiveUser(17,1111L);
+	}
 	public static long getUser(String phoneNumber) {
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
-		long userId=0;
+		long userId=-1;
 		try{
 			Transaction tx = null;
 			tx = session.beginTransaction();
@@ -44,7 +48,7 @@ public class UserFinder {
 			tx = session.beginTransaction();
 			User  user =  (User) session.get(User.class, userId);
 			user.setActive(true);
-			user.setLast_seen(activedDate);
+			user.setLastSeen(activedDate);
 			session.update(user);
 			tx.commit();
 		}catch (HibernateException e) {
@@ -60,11 +64,11 @@ public class UserFinder {
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
 		Transaction tx = null;
-		long userId = 0;
+		long userId = -1;
 		try{
 			User user = new User();
-			user.setLast_seen(date);
-			user.setDate_created(date);
+			user.setLastSeen(date);
+			user.setCreationDate(date);
 			user.setPhone(phoneNumber);
 			user.setName(name);
 			user.setActive(true);

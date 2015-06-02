@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -51,8 +52,11 @@ public class Poll {
 	@Column(name = "country")
 	private String country;
 	
+	@OneToOne(mappedBy="poll",cascade = CascadeType.ALL)
+	private Prize prize;
+	
 	@OneToMany(mappedBy="poll",cascade = CascadeType.ALL)
-	private Set<PollUser> pollUsers=new HashSet<PollUser>(0);
+	private Set<Vote> votes=new HashSet<Vote>(0);
 	
 	@OneToMany(mappedBy="poll",cascade = CascadeType.ALL)
 	  private Set<Question> question=new HashSet<Question>(0);
@@ -100,13 +104,6 @@ public class Poll {
 		this.type = type;
 	}
 
-	public Set<PollUser> getPollUsers() {
-		return pollUsers;
-	}
-
-	public void setPollUsers(Set<PollUser> pollUsers) {
-		this.pollUsers = pollUsers;
-	}
 
 	public int getNumOfVote() {
 		return numOfVote;
@@ -162,6 +159,30 @@ public class Poll {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	public Set<Vote> getVotes() {
+		return votes;
+	}
+
+	public void setVotes(Set<Vote> votes) {
+		this.votes = votes;
+	}
+
+	public Set<Question> getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(Set<Question> question) {
+		this.question = question;
+	}
+
+	public Prize getPrize() {
+		return prize;
+	}
+
+	public void setPrize(Prize prize) {
+		this.prize = prize;
 	}
 
 }

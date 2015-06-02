@@ -61,7 +61,7 @@ public class UserWebService {
 		String name=json.getName();
 		long UserId=UserService.registerUser(phoneNumber,date.getTime(),name);
 		String status="success";
-		if(UserId==0) {
+		if(UserId==-1) {
 			status="fail";
 		}
 		JSONObject jsonObject = new JSONObject();

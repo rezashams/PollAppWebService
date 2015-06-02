@@ -10,7 +10,7 @@ public class UserService {
 
 	public static long registerUser(String phoneNumber,long createdDate, String name) {
 		long userId=UserFinder.getUser(phoneNumber);
-		if (userId!=0) {
+		if (userId!=-1) {
 			UserFinder.updateActiveUser(userId,createdDate);
 		} else {
 			userId= UserFinder.addUser(phoneNumber, createdDate,name);

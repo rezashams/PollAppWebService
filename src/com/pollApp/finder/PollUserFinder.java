@@ -36,9 +36,8 @@ public class PollUserFinder {
 				User  user =  (User) session.get(User.class, user_id);
 				Poll  poll =  (Poll) session.get(Poll.class, poll_id);
 				int numOfVote=poll.getNumOfVote()+1;
-				poll=updateStatistic(poll,vote); 
-				poll.setLast_activity_time(vote_date);
-				user.setLast_seen(vote_date);
+				poll.setLastActivityDate(vote_date);
+				user.setLastSeen(vote_date);
 				poll.setNumOfVote(numOfVote);
 				PollUser pollUser= new PollUser();
 				pollUser.setUser(user);
@@ -55,9 +54,8 @@ public class PollUserFinder {
 				if (pollUser.getVote()==0) {
 					User  user =  (User) session.get(User.class, user_id);
 					Poll  poll =  (Poll) session.get(Poll.class, poll_id);
-					poll=updateStatistic(poll,vote); 
-					poll.setLast_activity_time(vote_date);
-					user.setLast_seen(vote_date);
+					poll.setLastActivityDate(vote_date);
+					user.setLastSeen(vote_date);
 					pollUser.setUser(user);
 					pollUser.setPoll(poll);
 					pollUser.setVote_created(vote_date);
@@ -79,17 +77,5 @@ public class PollUserFinder {
 		return pollUser_id;
 	}
 
-	private static Poll updateStatistic (Poll poll,int vote) throws Exception {
-		String statistic=poll.getStatistic();
-		StringBuilder changedStatistic = new StringBuilder(); 
-		String[] statisticArray=statistic.split("[$][$][$]");
-		statisticArray[vote-1]=String.valueOf(Integer.valueOf(statisticArray[vote-1])+1);
-		for (int i=0;i<statisticArray.length-1;i++) {
-			changedStatistic.append(statisticArray[i]);
-			changedStatistic.append("$$$");
-		}
-		changedStatistic.append(statisticArray[statisticArray.length-1]);
-		poll.setStatistic(changedStatistic.toString());
-		return poll;
-	}
+	
 }

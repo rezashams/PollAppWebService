@@ -38,7 +38,13 @@ public class Question {
 	private int numOfSelectableChoices;
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="parentId")
-    private Question question;
+    private Question paretntId;
+	@OneToMany(mappedBy="question",cascade = CascadeType.ALL)
+	private Set<Choice> choices=new HashSet<Choice>(0);
+	
+	@OneToMany(mappedBy="question",cascade = CascadeType.ALL)
+	private Set<SelectedChoice> selectedChoices=new HashSet<SelectedChoice>(0);
+	
 	public long getId() {
 		return id;
 	}
@@ -87,11 +93,23 @@ public class Question {
 	public void setNumOfSelectableChoices(int numOfSelectableChoices) {
 		this.numOfSelectableChoices = numOfSelectableChoices;
 	}
-	public Question getQuestion() {
-		return question;
+	public Question getParentId() {
+		return paretntId;
 	}
-	public void setQuestion(Question question) {
-		this.question = question;
+	public void setParentId(Question question) {
+		this.paretntId = question;
+	}
+	public Set<Choice> getChoices() {
+		return choices;
+	}
+	public void setChoices(Set<Choice> choices) {
+		this.choices = choices;
+	}
+	public Set<SelectedChoice> getSelectedChoices() {
+		return selectedChoices;
+	}
+	public void setSelectedChoices(Set<SelectedChoice> selectedChoices) {
+		this.selectedChoices = selectedChoices;
 	}
 	
 
