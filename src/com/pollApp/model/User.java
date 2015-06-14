@@ -66,7 +66,7 @@ public class User{
 	private Set<Poll> polls;
 	@OneToMany(mappedBy="user")
 	private Set<Vote> votes=new HashSet<Vote>(0);
-	@ManyToMany()
+	@ManyToMany(mappedBy="joinedusers" )
 	private Set<Groups> isInGroups = new HashSet <Groups>(0); 
 	@ManyToMany()
 	private Set<Prize> prizes = new HashSet <Prize>(0); 

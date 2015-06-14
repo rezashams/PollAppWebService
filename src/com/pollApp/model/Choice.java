@@ -30,8 +30,7 @@ public class Choice {
 	public long getId() {
 		return id;
 	}
-	@OneToMany(mappedBy="choice",cascade = CascadeType.ALL)
-	 private Set<Vote> votes=new HashSet<Vote>(0);
+	
 	
 	@OneToMany(mappedBy="choice",cascade = CascadeType.ALL)
 	private Set<SelectedChoice> selectedChoices=new HashSet<SelectedChoice>(0);
@@ -57,12 +56,7 @@ public class Choice {
 	public void setQuestion(Question question) {
 		this.question = question;
 	}
-	public Set<Vote> getVotes() {
-		return votes;
-	}
-	public void setVotes(Set<Vote> votes) {
-		this.votes = votes;
-	}
+	
 	public Set<SelectedChoice> getSelectedChoices() {
 		return selectedChoices;
 	}

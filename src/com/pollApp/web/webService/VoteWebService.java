@@ -1,4 +1,4 @@
-package com.pollApp.webService;
+package com.pollApp.web.webService;
 
 import java.util.Date;
 
@@ -15,33 +15,34 @@ import javax.ws.rs.core.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.pollApp.entityGetJson.PollUser_voteJson;
+import com.pollApp.entityGetJson.Vote_nonPrizeVoteJson;
 import com.pollApp.errorLog.MessageLog;
-import com.pollApp.service.PollUserService;
+import com.pollApp.service.VoteService;
 
 
-@Path("pollUser")  
-public class PollUserWebService {
+@Path("vote")  
+public class VoteWebService {
+	//localhost:9999/PollAppWebService/vote/nonPrizePoll
+	//{"userId":17,"pollId":49,"choice":1}
 	@POST
-	@Path("vote")  
+	@Path("nonPrizePoll")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8")  
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response voteToPoll(PollUser_voteJson json) { 
-		Date date= new Date();
-		long user_id=json.getUserId();
-		long poll_id=json.getPollId();
-		int vote=json.getVote();
-		long vote_date= date.getTime();
-	           long pollUser_id=PollUserService.voteToPoll(user_id, poll_id, vote_date, vote );
+	public Response voteToNonPrizePoll(Vote_nonPrizeVoteJson nonPrizeVoteJson) { 
+		Date dateNow= new Date();
+		long userId=nonPrizeVoteJson.getUserId();
+		long pollId=nonPrizeVoteJson.getPollId();
+		int vote=nonPrizeVoteJson.getChoice();
+		long date= dateNow.getTime();
+	           long voteId=VoteService.voteToNonPrizePoll(userId, pollId, date, vote );
 	           String status="success";
-	           if(pollUser_id==0) {
+	           if(voteId==-1) {
 	           	status="fail";
 	           }
 	JSONObject jsonObject = new JSONObject();
 	try {
-		//jsonObject.put("pollUser_id", pollUser_id);
 		jsonObject.put("status", status);
-		jsonObject.put("date", vote_date);
+		jsonObject.put("date", date);
 	} catch (JSONException e) {
 		MessageLog.log(e.toString());
 		e.printStackTrace();

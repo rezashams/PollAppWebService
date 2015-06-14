@@ -39,7 +39,7 @@ public static void testgetPolls() {
 	String type="public";
 	boolean prize=true;
 	long group_id=0;
-	List <Poll> pollList=PollService.getPolls(page, numOfEachPage,last_update,type,prize,group_id);
+	List <Poll> pollList=PollService.getPolls(page, numOfEachPage,last_update,type,group_id);
 	for (Poll poll:pollList) {
 		System.out.println(poll.getId());
 		System.out.println(poll.getCreationDate());

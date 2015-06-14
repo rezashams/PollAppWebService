@@ -21,14 +21,18 @@ public class Vote {
 	@Column(name = "id")
 	private long id;
 	@ManyToOne
-    @JoinColumn(name = "useId")  
+    @JoinColumn(name = "userId")  
 	private User user;
 	@ManyToOne
     @JoinColumn(name = "pollId")  
 	private Poll poll;
-	@ManyToOne
-	@JoinColumn(name = "choiceId")  
-    private Choice choice;
+	
+	@Column(name = "indexOfSelecChoice")
+	private int indexOfSelecChoice;
+	
+	@Column(name = "date")
+	private long date;
+
 	
 	@OneToMany(mappedBy="vote",cascade = CascadeType.ALL)
 	private Set<SelectedChoice> selectedChoices=new HashSet<SelectedChoice>(0);
@@ -51,17 +55,24 @@ public class Vote {
 	public void setPoll(Poll poll) {
 		this.poll = poll;
 	}
-	public Choice getChoice() {
-		return choice;
-	}
-	public void setChoice(Choice choice) {
-		this.choice = choice;
-	}
+	
 	public Set<SelectedChoice> getSelectedChoices() {
 		return selectedChoices;
 	}
 	public void setSelectedChoices(Set<SelectedChoice> selectedChoices) {
 		this.selectedChoices = selectedChoices;
+	}
+	public long getDate() {
+		return date;
+	}
+	public void setDate(long date) {
+		this.date = date;
+	}
+	public int getIndexOfSelecChoice() {
+		return indexOfSelecChoice;
+	}
+	public void setIndexOfSelecChoice(int indexOfSelecChoice) {
+		this.indexOfSelecChoice = indexOfSelecChoice;
 	}
 	
 }

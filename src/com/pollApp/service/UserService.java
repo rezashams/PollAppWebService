@@ -1,6 +1,10 @@
 package com.pollApp.service;
 
+import java.util.List;
+
+import com.pollApp.entityGetJson.User_updateUserJson;
 import com.pollApp.finder.*;
+import com.pollApp.model.Groups;
 
 public class UserService {
 
@@ -17,6 +21,16 @@ public class UserService {
 		}
 		return userId;
 		
+	}
+
+	public static List<Groups> getGroupsOfUser(long userId) {
+		
+		return UserFinder.getGroupsOfUser(userId);
+	}
+
+	public static boolean updateUser(User_updateUserJson updateUserJson) {
+		
+		return UserFinder.updateUser(updateUserJson);
 	}
 	
 	}

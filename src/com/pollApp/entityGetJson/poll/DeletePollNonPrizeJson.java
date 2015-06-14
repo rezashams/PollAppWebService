@@ -1,35 +1,20 @@
-package com.pollApp.entityGetJson;
+package com.pollApp.entityGetJson.poll;
 
-public class PollUser_voteJson {
+public class DeletePollNonPrizeJson {
+	
 	long userId;
 	long pollId;
-	int vote;
-	
-	public PollUser_voteJson(){}
-
 	public long getUserId() {
 		return userId;
 	}
-
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
-
 	public long getPollId() {
 		return pollId;
 	}
-
 	public void setPollId(long pollId) {
 		this.pollId = pollId;
 	}
 
-	public int getVote() {
-		return vote;
-	}
-
-	public void setVote(int vote) {
-		this.vote = vote;
-	}
-
-	
 }

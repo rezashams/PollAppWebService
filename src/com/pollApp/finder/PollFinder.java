@@ -11,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import com.pollApp.entityGetJson.poll.AddPollNonPrizeJson;
+import com.pollApp.entityGetJson.poll.DeletePollNonPrizeJson;
 import com.pollApp.errorLog.MessageLog;
 import com.pollApp.model.Choice;
 import com.pollApp.model.Comment;
@@ -19,14 +20,11 @@ import com.pollApp.model.Poll;
 import com.pollApp.model.PollUser;
 import com.pollApp.model.Question;
 import com.pollApp.model.User;
+import com.pollApp.model.Vote;
 
 public class PollFinder {
 	public static void main(String[] args) {
-	List<Poll> p=getPolls(1,5,1L,"public",0L );
-		for (Poll p1:p) {
-			System.out.println(p1.getId());
-		}
-		
+
 	}
 
 	public static long addPollNonPrize (AddPollNonPrizeJson pollNonPrize ) {
@@ -78,7 +76,7 @@ public class PollFinder {
 		}finally { 
 			session.close();
 			factory.close(); 
-		          }
+		}
 		return pollId; 
 	}
 
@@ -103,40 +101,100 @@ public class PollFinder {
 		query.setFirstResult(numOfEachPage*(page-1));
 		query.setMaxResults(numOfEachPage);
 		List<Poll> pollList=query.list();
-        session.close();
-		 factory.close(); 
+		session.close();
+		factory.close(); 
 		return  pollList;
 
 	}
-	
-	public static Poll getPoll (long poll_id ) {
+
+	public static Poll getPoll (long pollId ) {
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
 		Poll poll=null;
-		poll =  (Poll) session.get(Poll.class, poll_id);
-        session.close();
-		 factory.close(); 
+		poll =  (Poll) session.get(Poll.class, pollId);
+		session.close();
+		factory.close(); 
 		return  poll;
 
 	}
 
-	public static List<Poll> getMyPolls(long user_id) {
+	public static List<Poll> getMyOwnerPolls(long user_id) {
 		List<Poll> finalList = new ArrayList();
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
 		User  user =  (User) session.get(User.class, user_id);
 		List<Poll> ownerList = new ArrayList<Poll>(user.getPolls());
-		List<Poll> voteList = new ArrayList<Poll>();
-		
-		List<Poll> userComment = new ArrayList<Poll>();
-		
 		session.close();
 		factory.close();
+		return ownerList;
+	   /*List<Poll> voteList = new ArrayList<Poll>();
+		List<Poll> userComment = new ArrayList<Poll>();	
 		ownerList.removeAll(voteList);
 		voteList.addAll(ownerList);
 		voteList.removeAll(userComment);
 		userComment.addAll(voteList);
-		finalList=userComment;
-		return finalList;
+		finalList=userComment;*/
+		
+	}
+
+	public static boolean deletePollNonPrize(DeletePollNonPrizeJson pollNonPrize) {
+		boolean status=true;
+		SessionFactory factory=Factory.initial();
+		Session session = factory.openSession();
+		try {
+
+			Date date= new Date();
+			Poll poll=null;
+			User user=null;
+			Transaction tx = null;
+			poll =  (Poll) session.get(Poll.class, pollNonPrize.getPollId());
+			if (pollNonPrize.getUserId()>0) {
+			user =  (User) session.get(User.class, pollNonPrize.getUserId());
+			user.setLastSeen(date.getTime());
+			tx = session.beginTransaction();
+			session.update(user);
+			tx.commit();
+		}
+			tx = session.beginTransaction();
+			session.delete(poll);
+			tx.commit();
+		}catch (HibernateException e) {		
+			MessageLog.log(e.toString());
+			e.printStackTrace();
+			status=false;
+		}finally { 
+			session.close();
+			factory.close(); 
+		}
+		return status;
+	}
+
+	public static List<Poll> getMyVotePolls(long userId) {
+		List<Poll> finalList = new ArrayList<Poll>();
+		SessionFactory factory=Factory.initial();
+		Session session = factory.openSession();
+		User  user =  (User) session.get(User.class, userId);
+		List<Vote> votedPollList = new ArrayList<Vote>(user.getVotes());
+		for (Vote vote:votedPollList) {
+			finalList.add(vote.getPoll());
+		}
+		session.close();
+		factory.close();
+		return finalList;	
+	}
+
+	public static List<Poll> getMyGroupPolls(long userId) {
+		List<Poll> finalList = new ArrayList<Poll>();
+		SessionFactory factory=Factory.initial();
+		Session session = factory.openSession();
+		User  user =  (User) session.get(User.class, userId);
+		List<Groups> groupList = new ArrayList<Groups>(user.getGroups());
+		for (Groups group:groupList) {
+			List<Poll> PollList=new ArrayList<Poll>(group.getPolls());
+			finalList.addAll(PollList);
+		}
+		session.close();
+		factory.close();
+		return finalList;	
 	}	
 }

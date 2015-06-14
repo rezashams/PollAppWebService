@@ -45,8 +45,6 @@ public class Poll {
 	private String type;
 	@Column(name = "numOfQuestion")
 	private int numOfQuestion;
-	@Column(name = "ownerName")
-	private String ownerName;
 	@Column(name = "language")
 	private String language;
 	@Column(name = "country")
@@ -135,14 +133,6 @@ public class Poll {
 
 	public void setNumOfQuestion(int numOfQuestion) {
 		this.numOfQuestion = numOfQuestion;
-	}
-
-	public String getOwnerName() {
-		return ownerName;
-	}
-
-	public void setOwnerName(String ownerName) {
-		this.ownerName = ownerName;
 	}
 
 	public String getLanguage() {

@@ -1,13 +1,17 @@
 package com.pollApp.finder;
 
-import org.hibernate.Criteria;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import com.pollApp.entityGetJson.User_updateUserJson;
 import com.pollApp.errorLog.*;
 import com.pollApp.model.*;
 public class UserFinder {
@@ -84,5 +88,85 @@ public class UserFinder {
 		}
 		return userId;
 	}
+	public static List<Groups> getGroupsOfUser(long userId) {
+		SessionFactory factory=Factory.initial();
+		Session session = factory.openSession();
+		List<Groups> grouplist = new ArrayList<Groups>(0);
+		try {
+			User user=null;
+			user =  (User) session.get(User.class, userId);
+			grouplist.addAll(user.getIsInGroups());
+		}catch (HibernateException e) {		
+			MessageLog.log(e.toString());
+			e.printStackTrace();
+		}finally { 
+			session.close();
+			factory.close(); 
+		}
+		return grouplist ;		}
+	public static boolean updateUser(User_updateUserJson updateUserJson) {
+		boolean status=true;
+		SessionFactory factory=Factory.initial();
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			Date date = new Date();
+			User user=null;
+			user =  (User) session.get(User.class, updateUserJson.getUserId());
+			if (user==null) {
+				return false;
+			}
+			tx = session.beginTransaction();
+			if(updateUserJson.getAge()!=0) {
+				user.setAge(updateUserJson.getAge());
+			}
+			if(updateUserJson.getName()!=null) {
+				user.setName(updateUserJson.getName());
+			}
+			if(updateUserJson.getFamily()!=null) {
+				user.setFamily(updateUserJson.getFamily());
+			}
+			if(updateUserJson.getGender()!=null) {
+			user.setGender(updateUserJson.getGender());
+			}
+			if(updateUserJson.getDegree()!=null) {
+				user.setDegree(updateUserJson.getDegree());
+			}
+			if(updateUserJson.getJob()!=null) {
+				user.setJob(updateUserJson.getJob());
+			}
+			if(updateUserJson.getEmail()!=null) {
+				user.setEmail(updateUserJson.getEmail());
+			}
+			if(updateUserJson.getPhoto()!=null) {
+				user.setPhoto(updateUserJson.getPhoto());
+			}
+			if(updateUserJson.getCountry()!=null) {
+				user.setCountry(updateUserJson.getCountry());
+			}
+			if(updateUserJson.getProvince()!=null) {
+				user.setProvince(updateUserJson.getProvince());
+			}
+			if(updateUserJson.getCity()!=null) {
+				user.setCity(updateUserJson.getCity());
+			}
+			if(updateUserJson.getLanguage()!=null) {
+				user.setLanguage(updateUserJson.getLanguage());
+			}
+			if(updateUserJson.getCountryCode()!=0) {
+				user.setCountryCode(updateUserJson.getCountryCode());
+			}
+			user.setLastSeen(date.getTime());
+			session.update(user);
+		    session.flush();
+			tx.commit();
+		}catch (HibernateException e) {		
+			MessageLog.log(e.toString());
+			status=false;
+		}finally { 
+			session.close();
+			factory.close(); 
+		}
+		return status ;		}
 
 }
