@@ -83,6 +83,8 @@ public class PollFinder {
 	public static List<Poll> getPolls(int page, int numOfEachPage,long lastUpdate,String type,long groupId  ) {
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
+		session.createSQLQuery("SET GLOBAL max_allowed_packet = 1024*1024");
+		
 		Transaction tx = null;
 		StringBuilder hqlBuilder = new StringBuilder();
 		hqlBuilder.append("FROM Poll where creationDate > "+ String.valueOf(lastUpdate));

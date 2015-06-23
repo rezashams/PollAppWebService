@@ -34,7 +34,8 @@ class MyPojo {
 
 @Path("user")  
 public class UserWebService {  
-
+ //localhost:9999/PollAppWebService/user/sendSms
+	//{"code":111,"phoneNumber":"21212"}
 	@POST
 	@Path("sendSms")  
 	@Consumes(MediaType.APPLICATION_JSON) 
@@ -58,13 +59,15 @@ public class UserWebService {
 		return Response.status(200).entity(jsonObject.toString()).build();
 
 	}  
-	
+	//localhost:9999/PollAppWebService/user/updateUser
+	//{"city":"tehran","userId":17}
 	@POST
 	@Path("updateUser")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8") 
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateUser(User_updateUserJson updateUserJson) { 
 		boolean isUpdate=false;
+		Date date=new Date();
 		String status="success";
 		if(updateUserJson.getUserId()>0) {
 		  isUpdate=UserService.updateUser(updateUserJson);
@@ -77,6 +80,7 @@ public class UserWebService {
 		try {
 
 			jsonObject.put("status", status);
+			jsonObject.put("date", date.getTime());
 		} catch (JSONException e) {
 			MessageLog.log(e.getMessage());
 			e.printStackTrace();
@@ -86,7 +90,8 @@ public class UserWebService {
 		return Response.status(200).entity(jsonObject.toString()).build();
 
 	}  
-
+	//localhost:9999/PollAppWebService/user/registerUser
+//{"name":"ali","phoneNumber":"09124959486"}
 	@POST
 	@Path("registerUser")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8") 
@@ -120,7 +125,7 @@ public class UserWebService {
 	@Path("getGroupsOfUser")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8")  
 	public Response getGroupsOfUser(@DefaultValue("-1")@QueryParam("userId") long userId) {
-
+		Date date= new Date();
 		List <Groups> GroupList=UserService.getGroupsOfUser(userId);
 		JSONArray memberArray= new JSONArray();     
 		try{

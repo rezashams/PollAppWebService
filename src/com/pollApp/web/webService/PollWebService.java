@@ -60,7 +60,7 @@ public class PollWebService {
 		return Response.status(200).entity(jsonObject.toString()).build();
 
 	}  
-	//localhost:9999/PollAppWebService/poll/getPolls?page=3&numOfEachPage=1
+	//localhost:9999/PollAppWebService/poll/getPolls?page=1&numOfEachPage=3
 	@GET
 	@Path("getPolls")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8")  
@@ -170,7 +170,8 @@ public class PollWebService {
 		}
 		return Response.status(200).entity(jsonPoll.toString()).build();
 	}  
-	//localhost:9999/PollAppWebService/poll/getMyPolls?userId=17&page=1&numOfEachPage=20&type=all	@GET
+	//localhost:9999/PollAppWebService/poll/getMyPolls?userId=17&page=1&numOfEachPage=20&type=all
+	@GET
 	@Path("getMyPolls")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8") 
 	public Response getMyPolls(@DefaultValue("1")@QueryParam("page") int page, @DefaultValue("20")@QueryParam("numOfEachPage") int numOfEachPage,
