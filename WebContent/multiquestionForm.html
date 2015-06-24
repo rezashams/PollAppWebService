@@ -1,0 +1,284 @@
+<html>
+<head>
+<title>Welcome </title>
+</head>
+<body>
+<div id="prize">
+<h1>Prize:</h1>
+<p>prizeValue:</p>
+<input id="prizeValue" type="text"> <br>
+<p>numOfWinner:</p>
+<input id="numOfWinner" type="text">
+<p>expire Date[dd/mm/yyyy or dd-mm-yyyy format]:</p>
+<input id="expiredDate" type="text">
+<input style="visibility:hidden" id="expiredDateLong" type="text">
+
+<p>organization:</p>
+<input id="organization" type="text">
+<p>orgBanner:</p>
+<input id="orgBanner" type="text">
+<p>orgMoreINfo:</p>
+<input id="orgMoreINfo" type="text">
+
+</div>
+	<div id="poll">
+		<h1>multi Question Poll:</h1>
+		<p>Title:</p>
+		<input id="title" type="text"> <br>
+		<p>numOfQuestion:</p>
+		<input id="numOfQuestion" type="text">
+		<button type="button" id="SubmitPoll" onclick="getPoll()"> Submit Question</button> 
+		<label style ="visibility:hidden" id="numOfQuestionLabel"> last question must not be context-Based</label>
+		<p>language:</p>
+		<input id="language" type="text"><br>
+		<p>country:</p>
+		<input id="country" type="text">
+	</div>
+	<p> </p>
+		<button id="submit" style="background:red" onclick=" return validationAndcreateAndSendJson()" >Submit</button>
+	</body>
+
+	<script>
+function isValidDate(dateStr) {
+var datePat =/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+var matchArray = dateStr.match(datePat); // is the format ok?
+if (matchArray == null) {
+alert("Date is not in a valid format.")
+return false;
+}
+month = matchArray[1]; // parse date into variables
+day = matchArray[3];
+year = matchArray[4];
+if (month < 1 || month > 12) { // check month range
+alert("Month must be between 1 and 12.");
+return false;
+}
+if (day < 1 || day > 31) {
+alert("Day must be between 1 and 31.");
+return false;
+}
+if ((month==4 || month==6 || month==9 || month==11) && day==31) {
+alert("Month "+month+" doesn't have 31 days!")
+return false
+}
+if (month == 2) { // check for february 29th
+var isleap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+if (day>29 || (day==29 && !isleap)) {
+alert("February " + year + " doesn't have " + day + " days!");
+return false;
+   }
+}
+return true;  // date is valid
+}
+
+function validationAndcreateAndSendJson () {
+	var expiredDate=document.getElementById("expiredDate").value;
+  isValidDate(expiredDate);
+  document.getElementById("expiredDateLong").value= new Date(expiredDate).getTime();
+  var jsonOb=createJson();
+	sendJson(jsonOb);
+}
+
+function sendJson() {
+
+}
+function createJson() {
+	var finaljson ={};
+	finaljson.prizeValue=document.getElementById("prizeValue").value;
+	finaljson.numOfWinner=document.getElementById("numOfWinner").value;
+	finaljson.expiredDate=document.getElementById("expiredDateLong").value;
+	finaljson.organization=document.getElementById("organization").value;
+	finaljson.orgMoreINfo=document.getElementById("orgMoreINfo").value;
+	finaljson.orgBanner=document.getElementById("orgBanner").value;
+	finaljson.kindOfprize="multiQuestion";
+	finaljson.titleOfPoll=document.getElementById("title").value;
+	finaljson.numOfQuestion=document.getElementById("numOfQuestion").value;
+	finaljson.language_=document.getElementById("language").value;
+	finaljson.country=document.getElementById("country").value;
+
+  var Qs = document.getElementsByClassName("question");
+  	  var questionArray=[];
+  	for (i = 1; i <= Qs.length; i += 1) {
+  		//var QID=Qs[i-1].id;
+  		questionArray.push(getjsonquestion(Qs[i-1]));
+  	}
+  finaljson.qusetions=questionArray;
+	console.log(JSON.stringify(finaljson));
+}
+
+function getjsonquestion(Qs) {
+	  var questionjson ={}
+	  var children = Qs.getElementsByTagName('input');// any tag could be used here..
+	  var selectchildren = Qs.getElementsByTagName('Select');// any tag could be used here..
+  for(var i = 0; i< children.length;i++)
+  {
+    if (children[i].getAttribute('id') == 'titleOfQuestion') // any attribute could be used here
+    {
+      questionjson.titleOfQuestion=children[i].value;
+    } else if (children[i].getAttribute('id') == 'level') {
+      questionjson.level=children[i].value;
+    } else if (children[i].getAttribute('id') == 'numOfOption') {
+      questionjson.numOfOption=children[i].value;
+    }else if (children[i].getAttribute('id') == 'numOfSelectableChoice') {
+      questionjson.numOfSelectableChoice=children[i].value;
+    }else if (children[i].getAttribute('id') == 'typeOfQuestion') {
+      questionjson.typeOfQuestion=children[i].value;
+    } else if (children[i].getAttribute('id') == 'indexOfQuestion') {
+      questionjson.indexOfQuestion=children[i].value;
+    }else if (children[i].getAttribute('id') == 'IsRelative') {
+      questionjson.isRelative=children[i].value;
+    }else if (children[i].getAttribute('id') == 'ParentIndex') {
+      questionjson.parentIndex=children[i].value;
+    }
+  }
+   for(var i = 0; i< selectchildren.length;i++){
+   	if (selectchildren[i].getAttribute('id') == 'typeOfQuestion'){
+      questionjson.typeOfQuestion=selectchildren[i].value;
+    }
+   }
+   questionjson.options=getJsonOption(Qs);
+ return questionjson;
+}	
+
+function getJsonOption(Qs) {
+var OptionArray=[];
+var children = Qs.getElementsByTagName('div');// any tag could be used here..
+for(var i = 0; i< children.length;i++)
+  {
+  	 var Optionjson ={};
+    if (children[i].getAttribute('class') == 'Choice') // any attribute could be used here
+    {
+    	inputChildren=children[i].getElementsByTagName('input');
+    	for(var i1 = 0; i1< inputChildren.length;i1++){
+        if (inputChildren[i1].getAttribute('id') == 'index') {
+        	Optionjson.indexOfChoice=inputChildren[i1].value;
+        } else  if (inputChildren[i1].getAttribute('id') == 'titleOfChoice') {
+        	Optionjson.titleOfChoice=inputChildren[i1].value;
+        } 
+    	} //for
+    } 
+   OptionArray.push(Optionjson);
+  }//for
+
+ return OptionArray;
+}
+
+function changeNumOfQuestion() {
+var kind = document.getElementById("kind");
+var valueOfSelectKind = kind.options[kind.selectedIndex].value;
+var numOfQuestionTag = document.getElementById("numOfQuestion");
+if (valueOfSelectKind=="priority") {
+   numOfQuestionTag.value="1";
+   numOfQuestionTag.disabled=true;
+ } else {
+     numOfQuestionTag.disabled=false;
+ } 
+ if (valueOfSelectKind=="context-based") {
+     numOfQuestionLabel.style.visibility = "visible";
+ } else {
+     numOfQuestionLabel.style.visibility = "hidden";
+ } 
+
+}
+
+function getPoll() {
+	document.getElementById("poll").disabled = true;
+	var numOfQS=document.getElementById("numOfQuestion").value;
+	var numOfQuestion=parseInt(numOfQS, 10);
+	var questionList = document.getElementsByClassName("question");
+	while (questionList.length !=0) {
+		questionList[0].remove();
+	}
+	for (i = 0; i < numOfQuestion; i += 1) {
+		createQuestion(i+1);
+	}
+	
+}
+
+function createQuestion(QId) {
+	var visib="visible";
+	var divQ = document.createElement("div");
+	var att = document.createAttribute("id");       // Create a "class" attribute
+	att.value = "question"+QId; 
+	divQ.setAttributeNode(att);
+	var clas = document.createAttribute("class");                          // Set the value of  
+	clas.value = "question"; 
+	divQ.setAttributeNode(clas);
+	createtextTag(divQ,"Question"+QId+":","h1");
+	createTag (divQ,"id","indexOfQuestion","input",QId,"hidden");
+	createtextTag(divQ,"titleOfQuestion:","p");
+  createTag (divQ,"id","titleOfQuestion","input","",visib);
+  createtextTag(divQ,"numOfSelectableChoice:","p");
+  createTag (divQ,"id","numOfSelectableChoice","input","",visib);
+
+  createtextTag(divQ,"numOfOption:","p");
+  createTag (divQ,"id","numOfOption"+QId,"input","",visib);
+  var btnChoice = document.createElement("BUTTON");        // Create a <button> element
+  var t = document.createTextNode("SubmitChoice");       // Create a text node
+  btnChoice.appendChild(t); 
+  var att = document.createAttribute("onclick");       // Create a "class" attribute
+	att.value = "getChoice("+QId+")";                           // Set the value of the class 
+	btnChoice.setAttributeNode(att);
+	 divQ.appendChild(btnChoice); 
+   var submit=document.getElementById("submit")
+	document.body.insertBefore(divQ,submit);                    // Append <button> to <body>
+	
+}
+
+function getChoice(QId) {
+	var numOfChS=document.getElementById("numOfOption"+QId).value;
+	var numOfOption=parseInt(numOfChS, 10);
+	var questionNumber=document.getElementById("question"+QId);
+	var choiceList=questionNumber.getElementsByClassName("choice");
+	console.log(choiceList.length);
+	while (choiceList.length !=0) {
+		     choiceList[0].remove();
+	}
+	for (i = 0; i < numOfOption; i += 1) {
+		createChoice(QId,i+1);
+	}
+	
+}
+
+function createChoice (QId,id) {
+	var divCh = document.createElement("div");
+	var att = document.createAttribute("id");       // Create a "class" attribute
+	att.value = "Choice"+id;                           // Set the value of the class attribute
+	divCh.setAttributeNode(att);
+	var att1 = document.createAttribute("class");       // Create a "class" attribute
+	att1.value = "Choice";                           // Set the value of the class attribute
+	divCh.setAttributeNode(att1);
+	createtextTag(divCh,"index:","p");
+  createTag (divCh,"id","index","input","","visible");
+  createtextTag(divCh,"titleOfChoice:","p");
+  createTag (divCh,"id","titleOfChoice","input","","visable");
+  var divQ= document.getElementById("question"+QId);
+ 	divQ.appendChild(divCh);                   
+
+
+}
+
+
+function createtextTag (divQ,text,tagtype) {
+
+	var ptext = document.createElement(tagtype);
+	var nodetext = document.createTextNode(text);
+	ptext.appendChild(nodetext);
+	divQ.appendChild(ptext);
+
+
+}
+
+function createTag (divQ,attr,valOfattr,tagtype,value,visib) {
+	var tag = document.createElement(tagtype);
+	var att = document.createAttribute(attr);       // Create a "class" attribute
+	att.value = valOfattr;                           // Set the value of the class attribute
+	tag.setAttributeNode(att);
+	tag.value=value;
+	tag.style.visibility=visib;
+	divQ.appendChild(tag);
+}
+
+
+</script>
+</html>
