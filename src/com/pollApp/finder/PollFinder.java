@@ -80,7 +80,7 @@ public class PollFinder {
 		return pollId; 
 	}
 
-	public static List<Poll> getPolls(int page, int numOfEachPage,long lastUpdate,String type,long groupId  ) {
+	public static List<Poll> getPublicPolls(int page, int numOfEachPage,long lastUpdate ) {
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
 		session.createSQLQuery("SET GLOBAL max_allowed_packet = 1024*1024");
@@ -88,16 +88,8 @@ public class PollFinder {
 		Transaction tx = null;
 		StringBuilder hqlBuilder = new StringBuilder();
 		hqlBuilder.append("FROM Poll where creationDate > "+ String.valueOf(lastUpdate));
-		if (type.equals("public")) {
-			hqlBuilder.append(" and type='public'");
-		} else if (type.equals("group")){
-			hqlBuilder.append(" and type='group'");
-			hqlBuilder.append(" and groupId="+String.valueOf(groupId));
-		}  else if (type.equals("prize")){
-			hqlBuilder.append(" and type='prize'");
-		}
+		hqlBuilder.append(" and type='public'");
 		hqlBuilder.append("  order by creationDate desc");
-
 		String hql = hqlBuilder.toString();
 		Query query = session.createQuery(hql);
 		query.setFirstResult(numOfEachPage*(page-1));
@@ -129,13 +121,6 @@ public class PollFinder {
 		session.close();
 		factory.close();
 		return ownerList;
-	   /*List<Poll> voteList = new ArrayList<Poll>();
-		List<Poll> userComment = new ArrayList<Poll>();	
-		ownerList.removeAll(voteList);
-		voteList.addAll(ownerList);
-		voteList.removeAll(userComment);
-		userComment.addAll(voteList);
-		finalList=userComment;*/
 		
 	}
 

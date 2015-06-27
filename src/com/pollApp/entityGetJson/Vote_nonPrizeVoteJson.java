@@ -3,7 +3,7 @@ package com.pollApp.entityGetJson;
 public class Vote_nonPrizeVoteJson {
 	long userId;
 	long pollId;
-	int choice;
+	int selectedIndex;
 	
 	public Vote_nonPrizeVoteJson(){}
 
@@ -23,12 +23,12 @@ public class Vote_nonPrizeVoteJson {
 		this.pollId = pollId;
 	}
 
-	public int getChoice() {
-		return choice;
+	public int getSelectedIndex() {
+		return selectedIndex;
 	}
 
-	public void setChoice(int choice) {
-		this.choice = choice;
+	public void setSelectedIndex(int selectedIndex) {
+		this.selectedIndex = selectedIndex;
 	}
 
 	

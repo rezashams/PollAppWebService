@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -14,6 +15,7 @@ import com.pollApp.entityGetJson.Group_createGroupJson;
 import com.pollApp.entityGetJson.Group_deleteGroup;
 import com.pollApp.errorLog.MessageLog;
 import com.pollApp.model.Groups;
+import com.pollApp.model.Poll;
 import com.pollApp.model.User;
 
 public class GroupFinder {
@@ -110,7 +112,7 @@ public class GroupFinder {
 	}
 
 	public static boolean deleteGroup(Group_deleteGroup deleteGroupJson) {
-		boolean status=true;
+		boolean status=false;
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
 		try {
@@ -120,16 +122,18 @@ public class GroupFinder {
 			User user=null;
 			Transaction tx = null;
 			group =  (Groups) session.get(Groups.class, deleteGroupJson.getGroupId());
-			if (deleteGroupJson.getUserId()>0) {
-			user =  (User) session.get(User.class, deleteGroupJson.getUserId());
+			if (deleteGroupJson.getAdminId()>0 && deleteGroupJson.getAdminId()==group.getAdmin().getId()) {
+			user =  (User) session.get(User.class, deleteGroupJson.getAdminId());
 			user.setLastSeen(date.getTime());
 			tx = session.beginTransaction();
 			session.update(user);
 			tx.commit();
-		}
 			tx = session.beginTransaction();
 			session.delete(group);
 			tx.commit();
+			status=true;
+		}
+			
 		}catch (HibernateException e) {		
 			MessageLog.log(e.toString());
 			e.printStackTrace();
@@ -159,6 +163,27 @@ public class GroupFinder {
 		}
 		return Userlist ;	
 	
+	}
+
+	public static List<Poll> getPollsOfGroup(int page, int numOfEachPage,
+			long lastUpdate, long groupId) {
+		SessionFactory factory=Factory.initial();
+		Session session = factory.openSession();
+		session.createSQLQuery("SET GLOBAL max_allowed_packet = 1024*1024");	
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("FROM Poll where creationDate > "+ String.valueOf(lastUpdate));
+		hqlBuilder.append(" and type='group'");
+		hqlBuilder.append(" and groupId="+String.valueOf(groupId));
+		hqlBuilder.append("  order by creationDate desc");
+		String hql = hqlBuilder.toString();
+		Query query = session.createQuery(hql);
+		query.setFirstResult(numOfEachPage*(page-1));
+		query.setMaxResults(numOfEachPage);
+		List<Poll> pollList=query.list();
+		session.close();
+		factory.close(); 
+		return  pollList;
+
 	}
 
 }

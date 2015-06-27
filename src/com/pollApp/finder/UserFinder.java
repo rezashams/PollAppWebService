@@ -11,14 +11,18 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import com.pollApp.entityGetJson.User_deactiveUserJson;
+import com.pollApp.entityGetJson.User_registerUserJson;
 import com.pollApp.entityGetJson.User_updateUserJson;
 import com.pollApp.errorLog.*;
 import com.pollApp.model.*;
 public class UserFinder {
     public static void main(String[] args) {
     	//addUser("123132", 2222L,"reza");
-    	System.out.println(getUser("123132"));
-    	updateActiveUser(17,1111L);
+    	SessionFactory factory=Factory.initial();
+		Session session = factory.openSession();
+		User  user =  (User) session.get(User.class, 22L);
+    	System.out.println(user.getName());
 	}
 	public static long getUser(String phoneNumber) {
 		SessionFactory factory=Factory.initial();
@@ -44,14 +48,16 @@ public class UserFinder {
 		return userId;
 	}
 
-	public static void updateActiveUser(long userId , long activedDate) {
+	public static void updateActiveUser(long userId ) {
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
 		try{
+			Date date= new Date();
 			Transaction tx = null;
 			tx = session.beginTransaction();
 			User  user =  (User) session.get(User.class, userId);
 			user.setActive(true);
+			long activedDate=date.getTime();
 			user.setLastSeen(activedDate);
 			session.update(user);
 			tx.commit();
@@ -64,17 +70,22 @@ public class UserFinder {
 		}	
 	}
 
-	public static long addUser(String phoneNumber ,long date, String name) {
+	public static long addUser(User_registerUserJson json) {
 		SessionFactory factory=Factory.initial();
 		Session session = factory.openSession();
 		Transaction tx = null;
+		Date date= new Date();
+        long lastSeen=date.getTime();
 		long userId = -1;
 		try{
 			User user = new User();
-			user.setLastSeen(date);
-			user.setCreationDate(date);
-			user.setPhone(phoneNumber);
-			user.setName(name);
+			user.setLastSeen(lastSeen);
+			user.setCreationDate(lastSeen);
+			user.setPhone(json.getPhoneNumber());
+			user.setName(json.getName());
+			user.setLanguage(json.getLanguage());
+			user.setCountry(json.getCountry());
+			user.setCountryCode(json.getCountryCode());
 			user.setActive(true);
 			tx = session.beginTransaction();
 			userId= (long) session.save(user);
@@ -168,5 +179,33 @@ public class UserFinder {
 			factory.close(); 
 		}
 		return status ;		}
+	public static boolean deactiveUser(User_deactiveUserJson deactiveUserJson) {
+		// TODO Auto-generated method stub
+		boolean status=true;
+		SessionFactory factory=Factory.initial();
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			Date date = new Date();
+			User user=null;
+			user =  (User) session.get(User.class, deactiveUserJson.getUserId());
+			if (user==null) {
+				return false;
+			}
+			tx = session.beginTransaction();
+			user.setActive(false);
+			user.setLastSeen(date.getTime());
+			session.update(user);
+		    session.flush();
+			tx.commit();
+		}catch (HibernateException e) {		
+			MessageLog.log(e.toString());
+			status=false;
+		}finally { 
+			session.close();
+			factory.close(); 
+		}
+		return status ;		
+	}
 
 }

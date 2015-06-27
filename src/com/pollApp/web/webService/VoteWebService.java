@@ -23,7 +23,7 @@ import com.pollApp.service.VoteService;
 @Path("vote")  
 public class VoteWebService {
 	//localhost:9999/PollAppWebService/vote/nonPrizePoll
-	//{"userId":17,"pollId":49,"choice":1}
+	//{"userId":17,"pollId":49,"selectedIndex":1}
 	@POST
 	@Path("nonPrizePoll")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8")  
@@ -32,7 +32,7 @@ public class VoteWebService {
 		Date dateNow= new Date();
 		long userId=nonPrizeVoteJson.getUserId();
 		long pollId=nonPrizeVoteJson.getPollId();
-		int vote=nonPrizeVoteJson.getChoice();
+		int vote=nonPrizeVoteJson.getSelectedIndex();
 		long date= dateNow.getTime();
 	           long voteId=VoteService.voteToNonPrizePoll(userId, pollId, date, vote );
 	           String status="success";

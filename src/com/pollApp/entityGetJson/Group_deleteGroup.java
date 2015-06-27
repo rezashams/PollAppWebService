@@ -3,7 +3,7 @@ package com.pollApp.entityGetJson;
 public class Group_deleteGroup {
 	
 	long groupId;
-	long userId;
+	long adminId;
 
 	public long getGroupId() {
 		return groupId;
@@ -13,12 +13,12 @@ public class Group_deleteGroup {
 		this.groupId = groupId;
 	}
 
-	public long getUserId() {
-		return userId;
+	public long getAdminId() {
+		return adminId;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setAdminId(long adminId) {
+		this.adminId = adminId;
 	}
 
 }

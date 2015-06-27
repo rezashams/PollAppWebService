@@ -39,9 +39,9 @@ public class PollService {
 		return PollFinder.deletePollNonPrize(pollNonPrize );
 	}
 
-	public static List<Poll> getPolls (int page, int numOfEachPage,long last_update,String type,long group_id ) {
+	public static List<Poll> getPublicePolls (int page, int numOfEachPage,long last_update ) {
 
-		return PollFinder.getPolls(page, numOfEachPage,last_update,type,group_id);
+		return PollFinder.getPublicPolls(page, numOfEachPage,last_update);
 	}
 
 	public static Poll getPoll (long pollId ) {
@@ -167,7 +167,7 @@ public class PollService {
 			JSONObject jsonPoll = new JSONObject();
 			questionList=QuestionService.getQuestions(poll.getId());
 			JSONArray questionArray= new JSONArray();  
-			for (Question question:questionList) {
+			/*for (Question question:questionList) {
 				JSONObject jsonQuestion = new JSONObject();
 				jsonQuestion.put("title", question.getTitle());
 				jsonQuestion.put("level", question.getLevel());
@@ -184,7 +184,7 @@ public class PollService {
 				questionArray.put(jsonQuestion);
 			}
 
-			jsonPoll.put("questions", questionArray);
+			jsonPoll.put("questions", questionArray);*/
 			jsonPoll.put("pollId", poll.getId());
 			jsonPoll.put("relatedType",type);
 			jsonPoll.put("title", poll.getTitle());

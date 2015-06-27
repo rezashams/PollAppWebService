@@ -1,15 +1,15 @@
 package com.pollApp.entityGetJson;
 
 public class Group_addMemberToGroup {
-	long memberId;
+	long userId;
 	long groupId;
-
-	public long getMemberId() {
-		return memberId;
+    
+	public long getUserId() {
+		return userId;
 	}
 
-	public void setMemberId(long memberId) {
-		this.memberId = memberId;
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 
 	public long getGroupId() {

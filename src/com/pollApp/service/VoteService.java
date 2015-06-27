@@ -6,8 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.pollApp.finder.PollFinder;
 import com.pollApp.finder.QuestionFinder;
 import com.pollApp.finder.VoteFinder;
+import com.pollApp.model.Poll;
 import com.pollApp.model.Question;
 import com.pollApp.model.Vote;
 
@@ -21,29 +23,38 @@ public class VoteService {
 		return VoteFinder.getVoteByPollId(pollId );		
 	}
 
-	public static JSONObject calculateStatistic (List<Vote> voteList, long pollId) throws JSONException {	
+	public static JSONObject calculateNonPrizeStatistic (List<Vote> voteList, long pollId) throws JSONException {	
 
 		JSONObject jsonPollStatistic = new JSONObject();
-		JSONObject jsonstatistic = new JSONObject();
+		JSONArray jsonstatistic = new JSONArray();
+        Poll poll=PollFinder.getPoll(pollId);
+        int numOfVote=poll.getNumOfVote();
+        long adminId=poll.getOwner().getId();
+		jsonPollStatistic.put("numOfVote", numOfVote);
+		jsonPollStatistic.put("adminId", adminId);
+		jsonPollStatistic.put("pollId", pollId);
 
-		jsonPollStatistic.put("pollId", pollId);	
 		List<Question> questionList=QuestionFinder.getQuestions(pollId);
-		int numOfQuestion=0;
+		int numOfOption=0;
 		for(Question question:questionList){
-			numOfQuestion=question.getNumOfOption();   	
+			numOfOption=question.getNumOfOption();   	
 		}
-		int statitic [] = new int [numOfQuestion];
-		for (int num=1;num<=numOfQuestion;num++) {
+		int statitic [] = new int [numOfOption];
+		for (int num=1;num<=numOfOption;num++) {
 			statitic[num-1]=0;
 		}
 		for (Vote vote:voteList) {
 			statitic[vote.getIndexOfSelecChoice()-1]++;
 		}
 		
-		for (int num=1;num<=numOfQuestion;num++) {
-			jsonstatistic.put(String.valueOf(num), statitic[num-1]);
+		for (int num=1;num<=numOfOption;num++) {
+			JSONObject jsonChoice = new JSONObject();
+			jsonChoice.put("index", String.valueOf(num));
+			jsonChoice.put("count", statitic[num-1]);
+			jsonstatistic.put(jsonChoice);
 		}
-		jsonPollStatistic.put("statistic", jsonstatistic);
+		
+		jsonPollStatistic.put("choices", jsonstatistic);
 		return jsonPollStatistic;		
 	}
 

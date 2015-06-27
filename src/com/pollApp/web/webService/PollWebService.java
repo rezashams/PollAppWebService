@@ -60,64 +60,41 @@ public class PollWebService {
 		return Response.status(200).entity(jsonObject.toString()).build();
 
 	}  
-	//localhost:9999/PollAppWebService/poll/getPolls?page=1&numOfEachPage=3
+	//localhost:9999/PollAppWebService/poll/getPublicPolls?page=1&numOfEachPage=3
 	@GET
-	@Path("getPolls")  
+	@Path("getPublicPolls")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8")  
-	public Response getPolls( @DefaultValue("1")@QueryParam("page") int page, @DefaultValue("20")@QueryParam("numOfEachPage") int numOfEachPage
-			,@DefaultValue("public")@QueryParam("type") String type ,@DefaultValue("0")@QueryParam("lastUpdate") long lastUpdate 
-			,@DefaultValue("-1")@QueryParam("groupId") long groupId) { 
+	public Response getPublicePolls( @DefaultValue("1")@QueryParam("page") int page, @DefaultValue("20")@QueryParam("numOfEachPage") int numOfEachPage
+			 ,@DefaultValue("0")@QueryParam("lastUpdate") long lastUpdate ) { 
 		List <Poll> pollList =new ArrayList <Poll> ();
 		List <Question> questionList =new ArrayList <Question> ();
-		List <Choice> choiceList =new ArrayList <Choice> ();
-		pollList=PollService.getPolls(page, numOfEachPage,lastUpdate,type,groupId);
-		JSONArray pollArray= new JSONArray();     
-
+		pollList=PollService.getPublicePolls(page, numOfEachPage,lastUpdate);
+		JSONArray questionArray= new JSONArray();  
 		try {
 			for (Poll poll:pollList) {
-				JSONObject jsonPoll = new JSONObject();
 				questionList=QuestionService.getQuestions(poll.getId());
-				JSONArray questionArray= new JSONArray();  
 				for (Question question:questionList) {
 					JSONObject jsonQuestion = new JSONObject();
+					jsonQuestion.put("pollId", poll.getId());
+					jsonQuestion.put("creationDate", poll.getCreationDate());
+					jsonQuestion.put("ownerName", poll.getOwner().getName());
 					jsonQuestion.put("title", question.getTitle());
-					jsonQuestion.put("level", question.getLevel());
-					jsonQuestion.put("kind", question.getType());
-					choiceList=ChoiceService.getChoices(question.getId());
-					JSONArray choiceArray= new JSONArray();  
-					for (Choice choice:choiceList) {
-						JSONObject jsonChoice = new JSONObject();
-						jsonChoice.put("title", choice.getTitle());
-						jsonChoice.put("index", choice.getIndex());
-						choiceArray.put(jsonChoice);
-					}
-					jsonQuestion.put("options", choiceArray);
+					jsonQuestion.put("numOfVote", poll.getNumOfVote());
+					jsonQuestion.put("ownerId", poll.getOwner().getId());
+
 					questionArray.put(jsonQuestion);
 				}
-
-				jsonPoll.put("questions", questionArray);
-				jsonPoll.put("pollId", poll.getId());
-				jsonPoll.put("title", poll.getTitle());
-				jsonPoll.put("ownerName", poll.getOwner().getName());
-				jsonPoll.put("type", poll.getType());
-				jsonPoll.put("language", poll.getLanguage());
-				jsonPoll.put("country", poll.getCountry());
-				jsonPoll.put("numOfVote", poll.getNumOfVote());
-				jsonPoll.put("ownerId", poll.getOwner().getId());
-				if(poll.getGroup()!=null) {
-					jsonPoll.put("groupId", poll.getGroup().getId());
-				} 
-				pollArray.put(jsonPoll);
+				
 			}
 		} catch (JSONException e) {
 			MessageLog.log(e.getMessage());
 			e.printStackTrace();
 			return Response.status(200).entity("JSON Error").build();
 		}
-		return Response.status(200).entity(pollArray.toString()).build();
+		return Response.status(200).entity(questionArray.toString()).build();
 	}  
 
-	//localhost:9999/PollAppWebService/poll/getPoll?pollId=49
+	//localhost:9999/PollAppWebService/webService/poll/getPoll?pollId=49
 	@GET
 	@Path("getPoll")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8") 
@@ -133,7 +110,6 @@ public class PollWebService {
 				for (Question question:questionList) {
 					JSONObject jsonQuestion = new JSONObject();
 					jsonQuestion.put("title", question.getTitle());
-					jsonQuestion.put("level", question.getLevel());
 					jsonQuestion.put("kind", question.getType());
 					choiceList=ChoiceService.getChoices(question.getId());
 					JSONArray choiceArray= new JSONArray();  
@@ -196,7 +172,7 @@ public class PollWebService {
 		return Response.status(200).entity(pollArray.toString()).build();
 	}
 	
-	//localhost:9999/PollAppWebService/poll/nonPrizeStatistic?pollId=49
+	//localhost:9999/PollAppWebService/webService/poll/nonPrizeStatistic?pollId=50
 	@GET
 	@Path("nonPrizeStatistic")  
 	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8") 
@@ -204,7 +180,7 @@ public class PollWebService {
 		List<Vote> voteList=VoteService.getVoteByPollId(pollId);
 		JSONObject jsonStatistic = new JSONObject();
 		try{
-			jsonStatistic = VoteService.calculateStatistic(voteList,pollId);
+			jsonStatistic = VoteService.calculateNonPrizeStatistic(voteList,pollId);
 		} catch (JSONException e) {
 			MessageLog.log(e.getMessage());
 			e.printStackTrace();

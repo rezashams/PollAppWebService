@@ -19,6 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.pollApp.JsonSms;
+import com.pollApp.entityGetJson.User_checkUsers;
+import com.pollApp.entityGetJson.User_deactiveUserJson;
 import com.pollApp.entityGetJson.User_registerUserJson;
 import com.pollApp.entityGetJson.User_sendSmsJson;
 import com.pollApp.entityGetJson.User_updateUserJson;
@@ -90,7 +92,7 @@ public class UserWebService {
 		return Response.status(200).entity(jsonObject.toString()).build();
 
 	}  
-	//localhost:9999/PollAppWebService/user/registerUser
+	//localhost:9999/PollAppWebService/webService/user/registerUser
 //{"name":"ali","phoneNumber":"09124959486"}
 	@POST
 	@Path("registerUser")  
@@ -100,7 +102,7 @@ public class UserWebService {
 		Date date= new Date();
 		String phoneNumber=json.getPhoneNumber();
 		String name=json.getName();
-		long UserId=UserService.registerUser(phoneNumber,date.getTime(),name);
+		long UserId=UserService.registerUser(json);
 		String status="success";
 		if(UserId==-1) {
 			status="fail";
@@ -143,5 +145,56 @@ public class UserWebService {
 		return Response.status(200).entity(memberArray.toString()).build();
 
 	}
+	//localhost:9999/PollAppWebService/webService/user/deactiveUser
+	//{"userId":17}
+	@POST
+	@Path("deactiveUser")  
+	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8") 
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response deactiveUser(User_deactiveUserJson deactiveUserJson) { 
+		boolean isDeactive=false;
+		Date date=new Date();
+		String status="success";
+		if(deactiveUserJson.getUserId()>0) {
+		  isDeactive=UserService.deactiveUser(deactiveUserJson);
+		}
+			
+		if(!isDeactive ) {
+			status="fail";
+		}
+		JSONObject jsonObject = new JSONObject();
+		try {
 
+			jsonObject.put("status", status);
+			jsonObject.put("date", date.getTime());
+		} catch (JSONException e) {
+			MessageLog.log(e.getMessage());
+			e.printStackTrace();
+			return Response.status(200).entity("JSON Error").build();
+		}
+
+		return Response.status(200).entity(jsonObject.toString()).build();
+
+	}  
+	
+	@POST
+	@Path("checkUsers")  
+	@Produces(MediaType.APPLICATION_JSON+";charset=utf-8") 
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response checkUsers(User_checkUsers json) { 
+		JSONArray jsonResult = new JSONArray();
+		
+		try {
+			 jsonResult=UserService.checkUsers(json);
+		} catch (JSONException e) {
+			MessageLog.log(e.getMessage());
+			e.printStackTrace();
+			return Response.status(200).entity("JSON Error").build();
+		}
+
+		return Response.status(200).entity(jsonResult.toString()).build();
+
+	}  
+
+	
 }  
